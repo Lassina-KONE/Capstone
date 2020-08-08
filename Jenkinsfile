@@ -23,7 +23,7 @@ pipeline {
         } 
         stage('Security Scan') {
               steps { 
-                 aquaMicroscanner imageName: 'nginx:latest', notCompliesCmd: 'exit 1', onDisallowed: 'fail', outputFormat: 'html'
+                 aquaMicroscanner imageName: 'nginx:stable', notCompliesCmd: 'exit 1', onDisallowed: 'fail', outputFormat: 'html'
               }
          }               
     }
