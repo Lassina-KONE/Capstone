@@ -4,11 +4,11 @@ FROM nginx:stable-alpine
 RUN rm /usr/share/nginx/html/index.html
 
 # Create a working directory
-WORKDIR /app
+WORKDIR /appCapstone
 
 
 # Copy index file to working directory
-COPY . index.html /app/
+COPY . index.html /appCapstone/
 
 
 # Expose port 80

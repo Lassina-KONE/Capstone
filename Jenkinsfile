@@ -17,7 +17,7 @@ pipeline {
         stage( 'Build docker image for app' ) {
             steps {
                 sh 'echo "Building and tagging docker image..."'
-                sh 'docker build -t app:lastest .'
+                sh 'docker build -t appCapstone:lastest .'
                 sh 'docker image ls'                  
             }
         } 
@@ -32,8 +32,8 @@ pipeline {
                 withDockerRegistry([url: "", credentialsId: "docker_hub_cred"]) {
                     sh 'echo "Uploading docker image..."'
                     sh 'docker login'
-                    sh 'docker tag app:lastest lassina/app:lastest'
-                    sh 'docker push lassina/app'
+                    sh 'docker tag appCapstone:lastest lassina/appCapstone:lastest'
+                    sh 'docker push lassina/appCapstone'
                 }
                
             }
