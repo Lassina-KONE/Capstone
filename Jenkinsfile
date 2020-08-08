@@ -37,6 +37,24 @@ pipeline {
                 }
                
             }
+        }
+        stage('Deploy image to AWS EKS') {
+            steps {
+                withAWS( region:'eu-west-2', credentials:'aws_cred' ) {
+                    sh 'echo "Deploying image to AWS EKS cluster..."'
+                    sh 'kubectl config use-context arn:aws:eks:eu-west-2:410572167174:cluster/KubernetesCluster'            
+                    sh 'kubectl set image deployment app_capstone app_capstone=lassina/app_capstone:lastest'
+                    sh 'kubectl rollout status deployment app_capstone'
+                    sh 'kubectl apply -f kubernetes_infra/deployment-controller.yml'
+                    sh 'kubectl apply -f kubernetes_infra/deployment-service.yml'
+                    sh 'kubectl get nodes --all-namespaces'
+                    sh 'kubectl get deployments'
+                    sh 'kubectl get pod -o wide'
+                    sh 'kubectl get service/app_capstone'
+                    sh 'echo "Congratulations! Deployment successful."'
+                    sh 'kubectl describe deployment/app_capstone'
+                }
+            }
         }               
     }
 }
