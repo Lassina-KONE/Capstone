@@ -1,4 +1,4 @@
-FROM nginx:lastest
+FROM nginx:stable
 
 # Remove initial Nginx index file
 RUN rm /usr/share/nginx/html/index.html
