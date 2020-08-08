@@ -7,7 +7,13 @@ pipeline {
                 sh 'echo "HTML linting..."'
                 sh 'tidy -q -e *.html'
             }
-        }   
+        }
+        stage('HadoLint Dockerfile') {
+            steps {
+                sh 'echo "Dockerfile linting..."'
+                sh 'hadolint Dockerfile'
+            }
+        }    
         stage( 'Build docker image for app' ) {
             steps {
                 sh 'echo "Building and tagging docker image..."'
