@@ -17,7 +17,7 @@ pipeline {
         stage( 'Build docker image for app' ) {
             steps {
                 sh 'echo "Building and tagging docker image..."'
-                sh 'docker build -t app_capstone:lastest .'
+                sh 'docker build -t app-capstone:lastest .'
                 sh 'docker image ls'                  
             }
         } 
@@ -32,8 +32,8 @@ pipeline {
                 withDockerRegistry([url: "", credentialsId: "docker_hub_cred"]) {
                     sh 'echo "Uploading docker image..."'
                     sh 'docker login'
-                    sh 'docker tag app_capstone:lastest lassina/app_capstone:lastest'
-                    sh 'docker push lassina/app_capstone'
+                    sh 'docker tag app-capstone:lastest lassina/app-capstone:lastest'
+                    sh 'docker push lassina/app-capstone'
                 }
                
             }
@@ -48,9 +48,9 @@ pipeline {
                     sh 'kubectl get nodes --all-namespaces'
                     sh 'kubectl get deployments'
                     sh 'kubectl get pod -o wide'
-                    sh 'kubectl get service/app_capstone'
+                    sh 'kubectl get service/app-capstone'
                     sh 'echo "Congratulations! Deployment successful."'
-                    sh 'kubectl describe deployment/app_capstone'
+                    sh 'kubectl describe deployment/app-capstone'
                 }
             }
         }               
