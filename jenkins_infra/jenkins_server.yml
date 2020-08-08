@@ -1,0 +1,99 @@
+Description: >
+    KONE Lassina ND Capstone Jenkins servers file 2020
+Parameters:
+
+    EnvironmentName:
+        Description: An environment name that will be prefixed to resource names
+        Type: String
+
+Resources:
+
+    JenkinsSecGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Allow http & ssh to our hosts inbound but after deployment will be change to my ip only & no restrictions outbound
+        VpcId:
+          Fn::ImportValue:
+            !Sub "${EnvironmentName}-VPCID"
+        SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0        
+          
+    JenkinsLaunchConfig:
+      Type: AWS::AutoScaling::LaunchConfiguration
+      Properties:
+        UserData:
+          Fn::Base64: !Sub |
+            #!/bin/bash
+            apt-get update -y
+
+            # Install AWS CLI version 2
+            apt-get install unzip awscli -y
+            # Install Jenkins
+            apt install -y default-jdk
+            wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | apt-key add -
+            sh -c 'echo deb https://pkg.jenkins.io/debian binary/ > /etc/apt/sources.list.d/jenkins.list'
+            apt-get update -y
+            apt-get install -y jenkins
+            systemctl start jenkins
+
+            #install Docker
+            apt-get update -y
+            apt-get install -y docker.io
+
+            # Add jenkins user to docker group
+            usermod -aG docker jenkins
+
+            # Install eksctl CLI
+            curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+            mv /tmp/eksctl /usr/local/bin
+
+            # Install kubectl CLI
+            curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+            chmod +x ./kubectl
+            mv ./kubectl /usr/local/bin/kubectl
+
+            # Install Tidy for linting
+            apt-get update -y
+            apt-get install -y tidy
+
+            # Install hadolint for dockerfile linting
+            wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.17.6/hadolint-Linux-x86_64
+            chmod +x /bin/hadolint
+
+            # Restart Jenkins
+            sudo systemctl restart jenkins
+            sudo systemctl enable jenkins
+
+        ImageId: ami-00f6a0c18edb19300
+        SecurityGroups:
+        - Ref: JenkinsSecGroup
+        InstanceType: t3.large
+        KeyName: jenkins
+        BlockDeviceMappings:
+        - DeviceName: "/dev/sdk"
+          Ebs:
+            VolumeSize: '10'
+        
+    JenkinsGroup:
+      Type: AWS::AutoScaling::AutoScalingGroup
+      Properties:
+        VPCZoneIdentifier:
+        - Fn::ImportValue: 
+            !Sub "${EnvironmentName}-PUB-SN"
+        LaunchConfigurationName:
+          Ref: JenkinsLaunchConfig
+        MinSize: '1'
+        MaxSize: '1'
+        
