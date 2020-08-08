@@ -29,10 +29,13 @@ pipeline {
 
         stage('Upload image to docker hub'){
             steps{
-                sh 'echo "Uploading docker image..."'
-                sh 'docker login --username=lassina'
-                sh 'docker tag app:lastest lassina/app:lastest'
-                sh 'docker push lassina/app'
+                withDockerRegistry([url: "", credentialsId: "docker_hub_cred"]) {
+                    sh 'echo "Uploading docker image..."'
+                    sh 'docker login'
+                    sh 'docker tag app:lastest lassina/app:lastest'
+                    sh 'docker push lassina/app'
+                }
+               
             }
         }               
     }
