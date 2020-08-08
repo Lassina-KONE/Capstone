@@ -4,7 +4,7 @@ FROM nginx:stable-alpine
 RUN rm /usr/share/nginx/html/index.html
 
 # Create a working directory
-WORKDIR /appCapstone
+WORKDIR /app_capstone
 
 
 # Copy index file to working directory
