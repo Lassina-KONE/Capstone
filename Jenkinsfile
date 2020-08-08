@@ -25,6 +25,15 @@ pipeline {
               steps { 
                  aquaMicroscanner imageName: 'nginx:stable-alpine', notCompliesCmd: 'exit 1', onDisallowed: 'fail', outputFormat: 'html'
               }
-         }               
+         }
+
+        stage('Upload image to docker hub'){
+            steps{
+                sh 'echo "Uploading docker image..."'
+                sh 'docker login --username=lassina'
+                sh 'docker tag app:lastest lassina/app:lastest'
+                sh 'docker push lassina/app'
+            }
+        }               
     }
 }
