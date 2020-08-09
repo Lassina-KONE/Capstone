@@ -43,8 +43,7 @@ pipeline {
                 withAWS( region:'eu-west-2', credentials:'aws_cred' ) {
                     sh 'echo "Deploying image to AWS EKS cluster..."'
                     sh 'kubectl config use-context arn:aws:eks:eu-west-2:410572167174:cluster/KubernetesCluster'
-                    sh 'kubectl set image deployment app-capstone app-capstone=lassina/app-capstone:lastest'
-                    sh 'kubectl rollout status deployment app-capstone'
+                   
                     sh 'kubectl apply -f kubernetes_infra/deployment-controller.yml'
                     sh 'kubectl apply -f kubernetes_infra/deployment-service.yml'
                     sh 'kubectl get nodes --all-namespaces'
