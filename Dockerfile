@@ -8,7 +8,7 @@ WORKDIR /app-capstone
 
 
 # Copy index file to working directory
-COPY index.html /app-capstone/
+COPY index.html /app-capstone/index.html
 
 
 # Expose port 80
