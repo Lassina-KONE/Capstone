@@ -14,4 +14,4 @@ COPY . /app-capstone/
 
 
 # Expose port 80
-EXPOSE 80
+EXPOSE 80/tcp
