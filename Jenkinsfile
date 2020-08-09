@@ -17,7 +17,7 @@ pipeline {
         stage( 'Build docker image for app' ) {
             steps {
                 sh 'echo "Building and tagging docker image..."'
-                sh 'docker build -t app-capstone:lastest .'
+                sh 'docker build -t app-capstone:latest .'
                 sh 'docker image ls'                  
             }
         } 
@@ -32,7 +32,7 @@ pipeline {
                 withDockerRegistry([url: "", credentialsId: "docker_hub_cred"]) {
                     sh 'echo "Uploading docker image..."'
                     sh 'docker login'
-                    sh 'docker tag app-capstone:lastest lassina/app-capstone:lastest'
+                    sh 'docker tag app-capstone:latest lassina/app-capstone:latest'
                     sh 'docker push lassina/app-capstone'
                 }
                
@@ -43,7 +43,7 @@ pipeline {
                 withAWS( region:'eu-west-2', credentials:'aws_cred' ) {
                     sh 'echo "Deploying image to AWS EKS cluster..."'
                     sh 'kubectl config use-context arn:aws:eks:eu-west-2:410572167174:cluster/KubernetesCluster'
-                    sh 'kubectl set image deployment app-capstone app-capstone=lassina/app-capstone:lastest'
+                    sh 'kubectl set image deployment app-capstone app-capstone=lassina/app-capstone:latest'
                     sh 'kubectl rollout status deployment app-capstone'
                     sh 'kubectl apply -f kubernetes_infra/deployment-controller.yml'
                     sh 'kubectl apply -f kubernetes_infra/deployment-service.yml'

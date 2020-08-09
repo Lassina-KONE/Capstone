@@ -20,7 +20,7 @@ spec:
         app: app-capstone
     spec:
       containers:
-        - image: lassina/app-capstone:lastest"
+        - image: lassina/app-capstone:latest"
           imagePullPolicy: Always
           name: app-capstone
           ports:
