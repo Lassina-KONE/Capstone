@@ -35,6 +35,6 @@
         - this is the master pipeline
 
 #### LoadBalancer DNS
-    [here](a3688797ac2744e7c97b0f1a0f53d279-1602794727.eu-west-2.elb.amazonaws.com)
+    (a3688797ac2744e7c97b0f1a0f53d279-1602794727.eu-west-2.elb.amazonaws.com)
 
 
