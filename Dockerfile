@@ -16,3 +16,4 @@ COPY . /app-capstone
 
 # Expose port 80
 EXPOSE 80
+CMD [ "nginx","index.html" ]
